@@ -1,18 +1,6 @@
 # GIF-SERVER
 An Flask server + redis that keeps GIFs generated from gameplays.
 
-## BUILD
-Build it passing a list of authorized domains, only requests originated from those domains can insert GIFs into the database.
-``` shell
-docker-compose build --build-arg AUTHORIZED_DOMAINS="www.domain0.com,www.domain1.com,www.domain2.com"
-```
-
-Example
-
-``` shell
-docker-compose build --build-arg AUTHORIZED_DOMAINS="rives.io"
-```
-
 ## RUN
 ``` shell
 docker-compose up
