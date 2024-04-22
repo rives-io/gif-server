@@ -12,10 +12,10 @@ def insert_gif():
     insert_obj = request.get_json()
 
     gameplay_id = insert_obj.get("gameplay_id")
-    if not gameplay_id: return "Missing \"gameplay_id\" key!"
+    if not gameplay_id: return make_response("Missing \"gameplay_id\" key!\n", 200)
 
     gif = insert_obj.get("gif")
-    if not gif: return "Missing \"gif\" key!"
+    if not gif: return make_response("Missing \"gif\" key!\n", 200)
 
     redis.set(gameplay_id, gif)
 
@@ -27,7 +27,6 @@ def query_gifs():
     gameplays = request.get_json()
 
     gifs = redis.mget(gameplays)
-    print(gifs)
 
     return gifs
 
