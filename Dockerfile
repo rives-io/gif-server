@@ -4,6 +4,7 @@ WORKDIR /opt/python_server
 
 COPY ./server.py .
 COPY ./requirements.txt .
+COPY ./*.json .
 
 # Install dependencies
 COPY requirements.txt .
