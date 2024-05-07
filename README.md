@@ -37,3 +37,28 @@ Payload Format
     "3",
 ]
 ```
+
+### POST /insert-image
+Receives a JSON payload containing the gameplay ID and the image to be stored.
+
+Payload Format
+
+``` json
+{
+    "gameplay_id": "0x...",
+    "gif": "..."
+}
+```
+
+### POST /images
+Receives a JSON payload containing a list of gameplay ID and returns their imagess.
+
+Payload Format
+
+``` json
+[
+    "1",
+    "2",
+    "3",
+]
+```
