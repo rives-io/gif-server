@@ -50,7 +50,7 @@ def insert_image():
 
 @app.route("/images", methods=["POST"])
 @cross_origin()
-def query_imagess():
+def query_images():
     gameplays = request.get_json()
 
     images = redis.hmget(REDIS_IMAGES_KEY,gameplays)
