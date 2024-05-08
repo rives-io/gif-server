@@ -46,7 +46,7 @@ Payload Format
 ``` json
 {
     "gameplay_id": "0x...",
-    "gif": "..."
+    "image": "..."
 }
 ```
 
