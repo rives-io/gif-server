@@ -1,6 +1,7 @@
 from redis import Redis
-from flask import Flask, make_response, request
+from flask import Flask, make_response, request, Response
 from flask_cors import cross_origin
+import base64
 
 REDIS_GIFS_KEY = "tape_gifs"
 REDIS_IMAGES_KEY = "tape_images"
@@ -33,6 +34,12 @@ def query_gifs():
 
     return gifs
 
+@app.route("/gifs/<gif_id>", methods=["GET"])
+@cross_origin()
+def query_gif(gif_id):
+    data = base64.b64decode(redis.hget(REDIS_GIFS_KEY,gif_id))
+    return Response(data, mimetype='image/gif')
+
 @app.route("/insert-image", methods=["POST"])
 @cross_origin()
 def insert_image():
@@ -57,7 +64,11 @@ def query_images():
 
     return images
 
-
+@app.route("/images/<image_id>", methods=["GET"])
+@cross_origin()
+def query_image(image_id):
+    data = base64.b64decode(redis.hget(REDIS_IMAGES_KEY,image_id))
+    return Response(data, mimetype='image/png')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
