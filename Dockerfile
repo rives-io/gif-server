@@ -16,4 +16,4 @@ COPY ./server.py .
 
 ENV SECRET "amazing"
 
-CMD [ "python",  "server.py" ]
+CMD [ "gunicorn",  "server:app", "-w", "5", "--access-logfile", "-", "-b", "0.0.0.0:8000" ]
