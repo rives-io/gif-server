@@ -14,4 +14,6 @@ EOF
 
 COPY ./server.py .
 
+ENV SECRET "amazing"
+
 CMD [ "python",  "server.py" ]
