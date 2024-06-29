@@ -7,6 +7,7 @@ import jwt
 
 REDIS_GIFS_KEY = "tape_gifs"
 REDIS_IMAGES_KEY = "tape_images"
+REDIS_NAMES_KEY = "tape_names"
 
 SECRET = os.getenv("SECRET")
 
@@ -19,7 +20,7 @@ app = Flask(__name__)
 def insert_gif():
     global SECRET
 
-    if request.content_length > 268512:
+    if request.content_length > 1000000:
         return make_response("Content too large.", 200)
     payload = request.get_data()
 
@@ -61,7 +62,7 @@ def query_gif(gif_id):
 def insert_image():
     global SECRET
 
-    if request.content_length > 44752:
+    if request.content_length > 600000:
         return make_response("Content too large.", 200)
     payload = request.get_data()
 
@@ -95,6 +96,48 @@ def query_images():
 @cross_origin()
 def query_image(image_id):
     data = base64.b64decode(redis.hget(REDIS_IMAGES_KEY,image_id))
+    return Response(data, mimetype='image/png')
+
+
+@app.route("/insert-name", methods=["POST"])
+@cross_origin()
+def insert_name():
+    global SECRET
+
+    if request.content_length > 400:
+        return make_response("Content too large.", 200)
+    payload = request.get_data()
+
+    decoded_payload = None
+    try:
+        decoded_payload = jwt.decode(payload, SECRET, algorithms=["HS256"])
+    except Exception as e:
+        return jsonify({"success": False, "msg": str(e)})
+
+    gameplay_id = decoded_payload.get("gameplay_id")
+    if not gameplay_id: return make_response("Missing \"gameplay_id\" key!\n", 200)
+
+    name = decoded_payload.get("name")
+    if not name: return make_response("Missing \"name\" key!\n", 200)
+
+    redis.hset(REDIS_NAMES_KEY, gameplay_id, name)
+
+    return make_response("Name inserted\n", 200)
+
+@app.route("/names", methods=["POST"])
+@cross_origin()
+def query_names():
+    gameplays = request.get_json()
+    if len(gameplays) == 0: return make_response("Missing gameplays IDs.", 200)
+
+    images = redis.hmget(REDIS_NAMES_KEY,gameplays)
+
+    return images
+
+@app.route("/names/<gameplay_id>", methods=["GET"])
+@cross_origin()
+def query_name(gameplay_id):
+    data = redis.hget(REDIS_NAMES_KEY,gameplay_id)
     return Response(data, mimetype='image/png')
 
 if __name__ == "__main__":
